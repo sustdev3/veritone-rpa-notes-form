@@ -1,8 +1,8 @@
     // ── Read URL parameters and populate hidden fields + UI ──────────────────
     const params = new URLSearchParams(window.location.search);
 
-    const candidateEmail = params.get('from_email') || '';
-    const candidateName  = params.get('candidate_firstname') || '';
+    const candidateEmail = params.get('candidate_email') || '';
+    const candidateName  = params.get('candidate_name') || '';
     const advertTitle    = params.get('advert_title') || '';
 
     document.getElementById('candidate_email').value = candidateEmail;
@@ -11,7 +11,7 @@
 
     // Personalise the intro banner
     if (candidateName) {
-      document.getElementById('introRole').textContent =
+      document.getElementById('introTitle').textContent =
         'Hi ' + candidateName + ', please answer all questions to complete your application.';
     }
     if (advertTitle) {
