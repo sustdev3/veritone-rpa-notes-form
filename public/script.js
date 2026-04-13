@@ -1,3 +1,25 @@
+    // ── Load config.env ──────────────────────────────────────────────────────
+    (function () {
+      try {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'config.env', false);
+        xhr.send(null);
+        var env = {};
+        if (xhr.status === 200 || xhr.status === 0) {
+          xhr.responseText.split('\n').forEach(function (line) {
+            line = line.trim();
+            if (!line || line.charAt(0) === '#') return;
+            var eqIdx = line.indexOf('=');
+            if (eqIdx === -1) return;
+            env[line.substring(0, eqIdx).trim()] = line.substring(eqIdx + 1).trim();
+          });
+        }
+        window.ENV = env;
+      } catch (e) {
+        window.ENV = {};
+      }
+    })();
+
     // ── Read URL parameters and populate hidden fields + UI ──────────────────
     const params = new URLSearchParams(window.location.search);
 
@@ -83,8 +105,8 @@
       };
     }
 
-    // ── Submit ───────────────────────────────────────────────────────────────
-    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzlreCHhiyBD9FWDSYsFRIVqC6iLj7TrtjrdcM96FLM6AwjNAWpFObSzPTtVb5PcThp/exec'; // TODO: replace with your deployed Google Apps Script web app URL
+    // ── Submit ───────────────────────────────────────────────────────────────   
+    const APPS_SCRIPT_URL = window.ENV.G_APPS_SCRIPT_URL;
 
     function submitForm() {
       if (!validate()) {
