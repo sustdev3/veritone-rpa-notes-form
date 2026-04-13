@@ -14,9 +14,6 @@
       document.getElementById('introTitle').textContent =
         'Hi ' + candidateName + ', please answer all questions to complete your application.';
     }
-    if (advertTitle) {
-      document.getElementById('introTitle').textContent = advertTitle;
-    }
 
     // ── Abuse prevention: warn if accessed without email param ───────────────
     if (!candidateEmail) {
@@ -87,49 +84,44 @@
     }
 
     // ── Submit ───────────────────────────────────────────────────────────────
-    var APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; // TODO: replace with your deployed Google Apps Script web app URL
+    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzlreCHhiyBD9FWDSYsFRIVqC6iLj7TrtjrdcM96FLM6AwjNAWpFObSzPTtVb5PcThp/exec'; // TODO: replace with your deployed Google Apps Script web app URL
 
     function submitForm() {
       if (!validate()) {
-        // Scroll to first error
         var firstError = document.querySelector('.field-error.show, .has-error');
         if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
-
-      // Abuse prevention: block submissions without hidden fields
+    
       if (!candidateEmail) {
         document.getElementById('errorBanner').querySelector('p').textContent =
           'This form must be accessed via your personalised link. Please check your email and try again.';
         document.getElementById('errorBanner').classList.add('show');
         return;
       }
-
+    
       var btn = document.getElementById('submitBtn');
       btn.disabled = true;
       btn.textContent = 'Submitting…';
       document.getElementById('errorBanner').classList.remove('show');
-
+    
       var payload = getPayload();
-
-      // Google Apps Script requires form-encoded POST for no-cors requests
-      var formBody = Object.keys(payload)
-        .map(function(k) { return encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]); })
-        .join('&');
-
+    
+      // FIXED: Send as JSON with correct header
       fetch(APPS_SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors', // Required for GAS web app endpoints
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: formBody,
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },  // ← JSON header
+        body: JSON.stringify(payload)  // ← Send JSON directly
       })
       .then(function() {
-        // no-cors means we can't read the response — treat any resolved fetch as success
+        console.log('Form submitted successfully!');
         document.getElementById('screeningForm').style.display = 'none';
         document.getElementById('successScreen').classList.add('show');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       })
-      .catch(function() {
+      .catch(function(error) {
+        console.error('Network error:', error);
         btn.disabled = false;
         btn.textContent = 'Submit my answers';
         document.getElementById('errorBanner').classList.add('show');
