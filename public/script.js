@@ -1,20 +1,34 @@
     // ── Fetch GAS URL from API ───────────────────────────────────────────────
     let G_APPS_SCRIPT_URL = '';
 
-    // Try API first (production), fallback to config.json (local dev)
-    fetch('/api/config.js')
-      .then(res => res.json())
+    // Try API first (production on Vercel), then with .js extension (local dev), then config.json fallback
+    fetch('/api/config')
+      .then(res => {
+        if (!res.ok) throw new Error('API not found');
+        return res.json();
+      })
       .then(data => {
         G_APPS_SCRIPT_URL = data.gasUrl;
       })
       .catch(() => {
-        // Fallback: try loading config.json for local testing
-        fetch('/config.json')
-          .then(res => res.json())
+        // Fallback: try local API with .js extension
+        fetch('/api/config.js')
+          .then(res => {
+            if (!res.ok) throw new Error('API .js not found');
+            return res.json();
+          })
           .then(data => {
             G_APPS_SCRIPT_URL = data.gasUrl;
           })
-          .catch(err => console.error('Failed to load config:', err));
+          .catch(() => {
+            // Final fallback: try loading config.json for local testing
+            fetch('/config.json')
+              .then(res => res.json())
+              .then(data => {
+                G_APPS_SCRIPT_URL = data.gasUrl;
+              })
+              .catch(err => console.error('Failed to load config:', err));
+          });
       });
 
     // ── Read URL parameters and populate hidden fields + UI ──────────────────
