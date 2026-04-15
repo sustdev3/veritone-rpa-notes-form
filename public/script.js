@@ -34,12 +34,14 @@
     // ── Read URL parameters and populate hidden fields + UI ──────────────────
     const params = new URLSearchParams(window.location.search);
 
-    const candidateEmail = params.get('candidate_email') || '';
-    const candidateName  = params.get('candidate_name') || '';
-    const advertTitle    = params.get('advert_title') || '';
+    const candidateEmail = params.get('e') || '';
+    const candidateName  = params.get('n') || '';
+    const jobRef         = params.get('r') || '';
+    const advertTitle    = params.get('h') || '';
 
     document.getElementById('candidate_email').value = candidateEmail;
     document.getElementById('candidate_name').value  = candidateName;
+    document.getElementById('adref_no').value        = jobRef;
     document.getElementById('advert_title').value    = advertTitle;
 
     // Personalise the intro banner
@@ -53,9 +55,12 @@
       document.getElementById('jobTitle').textContent = advertTitle;
     }
 
-    // ── Abuse prevention: warn if accessed without email param ───────────────
+    // ── Email validation: show error if missing ───────────────────────────────
     if (!candidateEmail) {
-      console.warn('Form accessed without candidate_email parameter.');
+      document.getElementById('errorBanner').querySelector('p').textContent =
+        'This link appears to be invalid. Please use the link from your application email.';
+      document.getElementById('errorBanner').classList.add('show');
+      document.getElementById('submitBtn').disabled = true;
     }
 
     // ── Radio card highlight on selection ────────────────────────────────────
@@ -112,6 +117,7 @@
       return {
         candidate_email:  candidateEmail,
         candidate_name:   candidateName,
+        adref_no:         jobRef,
         advert_title:     advertTitle,
         suburb:           document.getElementById('suburb').value.trim(),
         car_licence:      document.querySelector('input[name="car_licence"]:checked').value,
