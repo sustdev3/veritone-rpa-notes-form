@@ -82,12 +82,6 @@
       margin-bottom: 8px;
     }
 
-    #introDisclaimer {
-      font-size: 13px;
-      font-style: italic;
-      opacity: 0.95;
-    }
-
     .reveal-link {
       color: #fff;
       text-decoration: underline;
@@ -340,7 +334,7 @@
       justify-content: center;
       margin: 0 auto 16px;
     }
-    .success-icon svg { width: 26px; height: 26px; }
+    .success-icon img { width: 40px; height: 40px; }
 
     .success-screen h2 { font-size: 20px; font-weight: 600; color: var(--green-dark); margin-bottom: 8px; }
     .success-screen p { font-size: 14px; color: var(--green); line-height: 1.6; }
