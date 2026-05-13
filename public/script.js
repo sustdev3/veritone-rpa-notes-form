@@ -73,10 +73,37 @@
           radio.closest('.radio-card').classList.add('selected');
 
           // Clear error for this group
-          var groupId = group.id; // e.g. "car_licence-group"
+          var groupId = group.id;
           var fieldName = groupId.replace('-group', '');
           var err = document.getElementById(fieldName + 'Error');
           if (err) err.classList.remove('show');
+        });
+      });
+
+      // Checkbox cards — toggle selected independently, max 2
+      group.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+          var allCheckboxes = group.querySelectorAll('input[type="checkbox"]');
+          var checkedCount = group.querySelectorAll('input[type="checkbox"]:checked').length;
+
+          // If over limit, revert this check
+          if (checkedCount > 2) {
+            checkbox.checked = false;
+            return;
+          }
+
+          checkbox.closest('.radio-card').classList.toggle('selected', checkbox.checked);
+
+          // Disable uncheckable options once 2 are selected
+          allCheckboxes.forEach(function(cb) {
+            if (!cb.checked) cb.disabled = checkedCount >= 2;
+          });
+
+          // Clear error once at least one is checked
+          var groupId = group.id;
+          var fieldName = groupId.replace('-group', '');
+          var err = document.getElementById(fieldName + 'Error');
+          if (err && checkedCount > 0) err.classList.remove('show');
         });
       });
     });
@@ -98,7 +125,7 @@
       }
 
       // Radio groups
-      ['car_licence', 'transport', 'fulltime_hours', 'immediate_start', 'preferred_shift', 'last_job_end'].forEach(function(name) {
+      ['living_in_aus', 'has_visa', 'car_licence', 'transport', 'fulltime_hours', 'immediate_start', 'last_job_end'].forEach(function(name) {
         var selected = document.querySelector('input[name="' + name + '"]:checked');
         var err = document.getElementById(name + 'Error');
         if (!selected) {
@@ -109,22 +136,34 @@
         }
       });
 
+      // Checkbox group — preferred_shift (one or two options)
+      var shiftChecked = document.querySelectorAll('input[name="preferred_shift"]:checked');
+      var shiftErr = document.getElementById('preferred_shiftError');
+      if (shiftChecked.length === 0) {
+        shiftErr.classList.add('show');
+        valid = false;
+      } else {
+        shiftErr.classList.remove('show');
+      }
+
       return valid;
     }
 
     // ── Collect payload ──────────────────────────────────────────────────────
     function getPayload() {
       return {
-        candidate_email:  candidateEmail,
-        candidate_name:   candidateName,
-        adref_no:         jobRef,
-        advert_title:     advertTitle,
-        suburb:           document.getElementById('suburb').value.trim(),
-        car_licence:      document.querySelector('input[name="car_licence"]:checked').value,
+        candidate_email:      candidateEmail,
+        candidate_name:       candidateName,
+        adref_no:             jobRef,
+        advert_title:         advertTitle,
+        living_in_aus:        document.querySelector('input[name="living_in_aus"]:checked').value,
+        has_visa:             document.querySelector('input[name="has_visa"]:checked').value,
+        suburb:               document.getElementById('suburb').value.trim(),
+        car_licence:          document.querySelector('input[name="car_licence"]:checked').value,
         transport:        document.querySelector('input[name="transport"]:checked').value,
         fulltime_hours:   document.querySelector('input[name="fulltime_hours"]:checked').value,
         immediate_start:  document.querySelector('input[name="immediate_start"]:checked').value,
-        preferred_shift:  document.querySelector('input[name="preferred_shift"]:checked').value,
+        preferred_shift:  Array.from(document.querySelectorAll('input[name="preferred_shift"]:checked')).map(function(el) { return el.value; }).join(', '),
         last_job_end:     document.querySelector('input[name="last_job_end"]:checked').value,
       };
     }

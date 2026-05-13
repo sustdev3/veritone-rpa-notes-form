@@ -40,6 +40,38 @@
       <div class="card-section">
         <div class="section-label">Questions</div>
 
+        <!-- living_in_australia -->
+        <div class="field">
+          <span class="field-label">Are you currently living in Australia? <span class="req">*</span></span>
+          <div class="radio-group" id="living_in_aus-group">
+            <label class="radio-card">
+              <input type="radio" name="living_in_aus" value="Yes" />
+              <span class="rc-label">Yes</span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="living_in_aus" value="No" />
+              <span class="rc-label">No</span>
+            </label>
+          </div>
+          <p class="field-error" id="living_in_ausError">Please select an option.</p>
+        </div>
+
+        <!-- has_visa -->
+        <div class="field">
+          <span class="field-label">Do you have a Visa? <span class="req">*</span></span>
+          <div class="radio-group" id="has_visa-group">
+            <label class="radio-card">
+              <input type="radio" name="has_visa" value="Yes" />
+              <span class="rc-label">Yes</span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="has_visa" value="No" />
+              <span class="rc-label">No</span>
+            </label>
+          </div>
+          <p class="field-error" id="has_visaError">Please select an option.</p>
+        </div>
+
         <!-- suburb -->
         <div class="field">
           <label class="field-label" for="suburb">
@@ -131,22 +163,22 @@
 
         <!-- preferred_shift -->
         <div class="field">
-          <span class="field-label">What is your preferred shift? <span class="req">*</span></span>
+          <span class="field-label">What is your preferred shift? <span class="req">*</span> <span style="font-weight:400;font-size:0.92em;">(Select one or two options)</span></span>
           <div class="radio-group" id="preferred_shift-group">
             <label class="radio-card">
-              <input type="radio" name="preferred_shift" value="Day shift" />
+              <input type="checkbox" name="preferred_shift" value="Day shift" />
               <span class="rc-label">Day shift</span>
             </label>
             <label class="radio-card">
-              <input type="radio" name="preferred_shift" value="Afternoon shift" />
+              <input type="checkbox" name="preferred_shift" value="Afternoon shift" />
               <span class="rc-label">Afternoon shift</span>
             </label>
             <label class="radio-card">
-              <input type="radio" name="preferred_shift" value="Night shift" />
+              <input type="checkbox" name="preferred_shift" value="Night shift" />
               <span class="rc-label">Night shift</span>
             </label>
           </div>
-          <p class="field-error" id="preferred_shiftError">Please select an option.</p>
+          <p class="field-error" id="preferred_shiftError">Please select at least one option.</p>
         </div>
 
         <!-- last_job_end -->
